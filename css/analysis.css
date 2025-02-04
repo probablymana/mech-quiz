@@ -1,0 +1,37 @@
+#arenaContainer {
+    float: left;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 980px;
+    margin: 0 auto;
+    margin-top: 20px;
+    height: 800px;
+}
+
+.info {
+    float: right
+}
+
+#arenaContainer img {
+    position: absolute;
+    transition: left 0.5s ease, top 0.5s ease, transform 0.5s ease;
+    transform-origin: center center;
+}
+
+.invisibleImg {
+    display: none;
+}
+
+#bossAoe {
+    clip-path: polygon(0% 0%, 50% 50%, 100% 0%, 100% 100%, 0 100%);
+    opacity: 50%
+}
+
+.test-loc {
+    clip-path: circle(30% at 50% 50%);
+}
+
+.test-dir {
+    clip-path: polygon(50% 50%, 80% 90%, 50% 80%, 20% 90%)
+}
