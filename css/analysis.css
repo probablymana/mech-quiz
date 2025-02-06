@@ -1,0 +1,90 @@
+body {
+    font-family: 'Liter', 'Roboto', sans-serif;
+}
+
+#arenaContainer {
+    float: left;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 980px;
+    height: 800px;
+    margin: 0 50px;
+}
+
+.info {
+    float: right;
+    padding: 50px;
+    width: 50%;
+}
+
+#arenaContainer img {
+    position: absolute;
+    transition: left 0.5s ease, top 0.5s ease, transform 0.5s ease;
+    transform-origin: center center;
+}
+
+.invisibleImg {
+    display: none;
+}
+
+#boss_aoe {
+    clip-path: polygon(0% 0%, 50% 50%, 100% 0%, 100% 100%, 0 100%);
+    opacity: 30%
+}
+
+.testLoc {
+    clip-path: circle(30% at 50% 50%);
+}
+
+.testDir {
+    clip-path: polygon(50% 50%, 80% 90%, 50% 80%, 20% 90%)
+}
+
+button {
+    padding: 15px;
+    font-size: 20px;
+}
+
+#bossInfo, #playerInfo, #scoreInfo {
+    height: 100px;
+}
+
+#explanation {
+    border-style: solid;
+    border-radius: 15px;
+    border-width: 2px;
+    padding: 40px 30px;
+    display: inline-block;
+    width: 30%;
+    text-align: center;
+    font-size: 25px;
+}
+
+.correct {
+    border-color: green;
+    background-color: lightgreen;
+}
+
+.wrong {
+    border-color: darkred;
+    background-color: lightcoral;
+}
+
+.instruction {
+    border-color: grey;
+    background-color: lightgray;
+}
+
+#buttons {
+    padding: 30px;
+}
+
+svg {
+    position:absolute;
+}
+
+line {
+    stroke:white;
+    stroke-width:3;
+}
