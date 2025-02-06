@@ -113,7 +113,8 @@ var currentCells = [];
 var weirdPattern = false;
 var assetsToClear = ['start_arrow_0', 'start_arrow_1'];
 var currentScore = 0;
-var currentIndex = null;
+var locIndex = null;
+var dirIndex = [0, 1];
 
 $(document).ready(function() {
     window.nextStep = nextStep;
@@ -139,7 +140,8 @@ function startOver() {
     weirdPattern = false;
     assetsToClear = ['start_arrow_0', 'start_arrow_1'];
     currentScore = 0;
-    currentIndex = null;
+    dirIndex = [0, 1];
+    locIndex = null;
 
     $('#arenaContainer').empty();
     $('#bossInfo').empty();
@@ -435,7 +437,7 @@ function step0() {
 
     // place test locs
     initTests();
-    toggleButton('confirmButton', true);
+    toggleButton('confirmButton', false);
 
     updateExplanation('instruction',
         'Mechanic 1!<br>Pick a <b>location to stand on</b> and a <b>direction to face</b> to show the gap in your \'shield\' to the first <b>orb</b>.'
@@ -512,14 +514,13 @@ function initTests() {
 }
 
 function selectDirection(index) {
-    console.log('selectdirection', index);
-    currentIndex = index;
+    //console.log('selectdirection', index);
+    dirIndex = index;
     resolveRotation('player_hole', currentPlayerMechs, false, index);
 }
 
 function finishStep() {
-    var index = currentIndex;
-    console.log('finishstep', index);
+    //console.log('finishstep', index);
     toggleButton('nextButton', true);
     toggleButton('confirmButton', false);
     var playerCenter = getCenterCoords('player_hole');
@@ -554,7 +555,7 @@ function finishStep() {
                 bossAoeImg.fadeTo(FADE_DEFAULT, 0.7);
                 bossAoeImg.fadeOut(FADE_DEFAULT + 400);
 
-                var safe = isSafe(index);
+                var safe = isSafe(locIndex);
                 var correctText = 'Good job! You dodged Lala\'s AoE.';
                 var wrongText = 'Oops! Don\'t forget to check Lala\'s debuffs to see where it rotates. (We\'re not counting diagonals as safe in this simulation!)';
                 grade(safe, correctText, wrongText);
@@ -584,7 +585,7 @@ function finishStep() {
                 traverseAndActivate();
                 explodeOrb();
 
-                resolveRotation('player_hole', currentPlayerMechs, true, index);
+                resolveRotation('player_hole', currentPlayerMechs, true, dirIndex);
 
                 var bossCenter = getCenterCoords('boss');
                 drawLine(bossCenter, playerCenter);
@@ -684,11 +685,14 @@ function toggleTestSpots(showLocations, showDirections, loc) {
 }
 
 function selectLocation(index) {
+    locIndex = index;
     var baseCell = 2*CELL_SIZE;
     var topPx = baseCell + index[0]*PLAYER_OFFSET;
     var leftPx = baseCell + index[1]*PLAYER_OFFSET;
 
     var loc = [topPx, leftPx];
+    
+    toggleButton('confirmButton', true);
 
     //move player to location
     moveImage($('#player_face'), loc);
@@ -696,12 +700,12 @@ function selectLocation(index) {
     moveImage($('#player_rotation'), getPlayerRotationCoords(loc));
 
     //reset rotation to face North
-    currentIndex = [0,1];
-    resolveRotation('player_hole', currentPlayerMechs, false, currentIndex);
+    dirIndex = [0,1];
+    resolveRotation('player_hole', currentPlayerMechs, false, dirIndex);
 
     if(currentStep == 1) { // no need to select direction
         //make all test locations invisible
-        currentIndex = index;
+        locIndex = index;
     } else {
         //make all test locations invisible
         toggleTestSpots(true, true, loc);
