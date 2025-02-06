@@ -102,6 +102,7 @@ const INTERVAL_SECONDS = 1000;
 var arenaGrid = {};
 var deadzoneGrid = [];
 var assetsGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));
+var visitedGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));
 var testLocations = [];
 var testDirections = [];
 
@@ -126,7 +127,7 @@ $(document).ready(function() {
 function startOver() {
     arenaGrid = {};
     deadzoneGrid = [];
-    assetsGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));
+    assetsGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));visitedGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));
     testLocations = [];
     testDirections = [];
 
@@ -327,6 +328,9 @@ function step0() {
             
             $('#arenaContainer').append(cellImg);
             gridRow[j] = cellId;
+
+            //initialize visitedGrid
+            visitedGrid[i][j] = false;
         }
         deadzoneGrid[i] = gridRow;
     }
@@ -608,10 +612,17 @@ function traverseGrid(currentCellIndex) {
         ['L', -1]
     ]);
 
-    var newX = fitToGrid(coordsX + deltaX.get(direction));
-    var newY = fitToGrid(coordsY + deltaY.get(direction));
+    var newX = coordsX + deltaX.get(direction);
+    var newY = coordsY + deltaY.get(direction);
+
+    if(!isWithinGrid(newX) || !isWithinGrid(newY)){
+        return null;
+    }
+
     var newContents = grid[newX][newY];
     var newId = assetsGrid[newX][newY];
+
+    //console.log('traversing ', newX, newY);
 
     if(newContents != ' ')
         assetsToClear.push(newId);
@@ -623,8 +634,7 @@ function traverseGrid(currentCellIndex) {
     else if(newContents != ' ') // is direction
         newDirection = newContents.toUpperCase();
 
-    arenaGrid.grid[newX][newY] = ' ';
-
+    
     var newCell = {
         coordinates: [newX, newY],
         direction: newDirection
@@ -747,7 +757,8 @@ function traverseAndActivate() {
 
     for(var i = 0; i < currentCells.length; i++) {
         var newCell = traverseGrid(i);
-        activateDeadzone(newCell.coordinates);
+        if(newCell)
+            activateDeadzone(newCell.coordinates);
     }
 }
 
@@ -836,6 +847,11 @@ function fitToGrid(val) {
     return val;
 }
 
+function isWithinGrid(val) {
+    if(val < 0 || val >= ARENA_LENGTH) return false;
+    return true;
+}
+
 function explodeOrb() {
     var orbExplosionImg = $('<img>', {
         src: '../assets/orb-aoe.png',
@@ -844,7 +860,7 @@ function explodeOrb() {
     orbExplosionImg.css({
         'top': '0px',
         'left': '0px',
-        'opacity': '50%',
+        'opacity': '20%',
         'display': 'none'
     });
     $('#arenaContainer').append(orbExplosionImg);
