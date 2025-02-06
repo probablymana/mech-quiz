@@ -110,7 +110,7 @@ var currentPlayerMechs = null;
 var currentStep = 0;
 var currentCells = [];
 var weirdPattern = false;
-var assetsToClear = [];
+var assetsToClear = ['start_arrow_0', 'start_arrow_1'];
 var currentScore = 0;
 
 
@@ -135,7 +135,7 @@ function startOver() {
     currentStep = 0;
     currentCells = [];
     weirdPattern = false;
-    assetsToClear = [];
+    assetsToClear = ['start_arrow_0', 'start_arrow_1'];
     currentScore = 0;
 
     $('#arenaContainer').empty();
@@ -1057,10 +1057,10 @@ function getTopLeftCoord(targetId) {
 }
 
 function fadeAssets() {
-    assetsToClear.forEach(element => {
-        var asset = assetsToClear.pop();
+    assetsToClear.forEach(asset => {
         $(`#${asset}`).fadeOut(FADE_DEFAULT);
     });
+    assetsToClear = [];
 }
 
 function toggleButton(buttonId, toEnable) {
