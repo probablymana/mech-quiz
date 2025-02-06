@@ -491,7 +491,6 @@ function initTests() {
             var testImg = $('<img>', {
                 src: '../assets/test-direction.png',
                 id: testId,
-                //onclick: `finishStep([${i}, ${j}])`,
                 onclick: `selectDirection([${i}, ${j}])`,
                 height: PLAYER_SIZE + 'px',
                 class: 'testDir'
@@ -513,12 +512,14 @@ function initTests() {
 }
 
 function selectDirection(index) {
+    console.log('selectdirection', index);
     currentIndex = index;
     resolveRotation('player_hole', currentPlayerMechs, false, index);
 }
 
 function finishStep() {
     var index = currentIndex;
+    console.log('finishstep', index);
     toggleButton('nextButton', true);
     toggleButton('confirmButton', false);
     var playerCenter = getCenterCoords('player_hole');
@@ -526,7 +527,6 @@ function finishStep() {
     switch(currentStep) {
         case 0: // judge against orb 1 
             toggleTestSpots(false, false, null);
-            //resolveRotation('player_hole', currentPlayerMechs, false, index);
             
             setTimeout(() => {
                 traverseAndActivate();
@@ -563,7 +563,6 @@ function finishStep() {
 
         case 2: // judge against orb 2
             toggleTestSpots(false, false, null);
-            //resolveRotation('player_hole', currentPlayerMechs, false, index);
 
             setTimeout(() => {
                 traverseAndActivate();
@@ -580,7 +579,6 @@ function finishStep() {
 
         case 3: // judge against boss tether
             toggleTestSpots(false, false, null);
-            //resolveRotation('player_hole', currentPlayerMechs, false, index);
             
             setTimeout(() => {
                 traverseAndActivate();
@@ -647,7 +645,6 @@ function traverseGrid(currentCellIndex) {
         explodeOrb([newX, newY]);
     else if(newContents != ' ') // is direction
         newDirection = newContents.toUpperCase();
-
     
     var newCell = {
         coordinates: [newX, newY],
