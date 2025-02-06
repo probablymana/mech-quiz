@@ -564,6 +564,7 @@ function finishStep(index) {
             
             setTimeout(() => {
                 traverseAndActivate();
+                explodeOrb();
 
                 resolveRotation('player_hole', currentPlayerMechs, true, index);
 
@@ -621,6 +622,8 @@ function traverseGrid(currentCellIndex) {
         explodeOrb([newX, newY]);
     else if(newContents != ' ') // is direction
         newDirection = newContents.toUpperCase();
+
+    arenaGrid.grid[newX][newY] = ' ';
 
     var newCell = {
         coordinates: [newX, newY],
@@ -833,12 +836,7 @@ function fitToGrid(val) {
     return val;
 }
 
-function explodeOrb(cell) {
-    var cellX = cell[0];
-    var cellY = cell[1];
-
-    var orbId = assetsGrid[cellX][cellY];
-
+function explodeOrb() {
     var orbExplosionImg = $('<img>', {
         src: '../assets/orb-aoe.png',
         height: 965 + 'px'
