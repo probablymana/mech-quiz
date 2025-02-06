@@ -113,11 +113,12 @@ var currentCells = [];
 var weirdPattern = false;
 var assetsToClear = ['start_arrow_0', 'start_arrow_1'];
 var currentScore = 0;
-
+var currentIndex = null;
 
 $(document).ready(function() {
     window.nextStep = nextStep;
     window.selectLocation = selectLocation;
+    window.selectDirection = selectDirection;
     window.finishStep = finishStep;
     window.startOver = startOver;
 
@@ -138,6 +139,7 @@ function startOver() {
     weirdPattern = false;
     assetsToClear = ['start_arrow_0', 'start_arrow_1'];
     currentScore = 0;
+    currentIndex = null;
 
     $('#arenaContainer').empty();
     $('#bossInfo').empty();
@@ -226,6 +228,7 @@ function step3() {
         traverseAndActivate();
 
         if(!weirdPattern) {
+            toggleButton('confirmButton', true);
             toggleTestSpots(true, false, null);
         }
     }, 0);
@@ -234,6 +237,7 @@ function step3() {
     if(weirdPattern) {
         setTimeout(() => {
             traverseAndActivate();
+            toggleButton('confirmButton', true);
             toggleTestSpots(true, false, null);
         }, INTERVAL_SECONDS);
     }
@@ -253,6 +257,7 @@ function step2() {
         //if weird pattern, orb activate toggleSpots here
         if(weirdPattern) {
             toggleTestSpots(true, false, null);
+            toggleButton('confirmButton', true);
         }
     }, 0);
 
@@ -261,6 +266,7 @@ function step2() {
         setTimeout(() => {
             traverseAndActivate();
             toggleTestSpots(true, false, null);
+            toggleButton('confirmButton', true);
         }, START_SECONDS);
     }
 }
@@ -305,6 +311,7 @@ function step1() {
     setTimeout(() => {
         traverseAndActivate();
         toggleTestSpots(true, false, null);
+        toggleButton('confirmButton', true);
     }, START_SECONDS + 4*INTERVAL_SECONDS);
 }
 
@@ -428,6 +435,7 @@ function step0() {
 
     // place test locs
     initTests();
+    toggleButton('confirmButton', true);
 
     updateExplanation('instruction',
         'Mechanic 1!<br>Pick a <b>location to stand on</b> and a <b>direction to face</b> to show the gap in your \'shield\' to the first <b>orb</b>.'
@@ -483,7 +491,8 @@ function initTests() {
             var testImg = $('<img>', {
                 src: '../assets/test-direction.png',
                 id: testId,
-                onclick: `finishStep([${i}, ${j}])`,
+                //onclick: `finishStep([${i}, ${j}])`,
+                onclick: `selectDirection([${i}, ${j}])`,
                 height: PLAYER_SIZE + 'px',
                 class: 'testDir'
             });
@@ -503,14 +512,21 @@ function initTests() {
     }
 }
 
-function finishStep(index) {
+function selectDirection(index) {
+    currentIndex = index;
+    resolveRotation('player_hole', currentPlayerMechs, false, index);
+}
+
+function finishStep() {
+    var index = currentIndex;
     toggleButton('nextButton', true);
+    toggleButton('confirmButton', false);
     var playerCenter = getCenterCoords('player_hole');
 
     switch(currentStep) {
         case 0: // judge against orb 1 
             toggleTestSpots(false, false, null);
-            resolveRotation('player_hole', currentPlayerMechs, false, index);
+            //resolveRotation('player_hole', currentPlayerMechs, false, index);
             
             setTimeout(() => {
                 traverseAndActivate();
@@ -547,7 +563,7 @@ function finishStep(index) {
 
         case 2: // judge against orb 2
             toggleTestSpots(false, false, null);
-            resolveRotation('player_hole', currentPlayerMechs, false, index);
+            //resolveRotation('player_hole', currentPlayerMechs, false, index);
 
             setTimeout(() => {
                 traverseAndActivate();
@@ -564,7 +580,7 @@ function finishStep(index) {
 
         case 3: // judge against boss tether
             toggleTestSpots(false, false, null);
-            resolveRotation('player_hole', currentPlayerMechs, false, index);
+            //resolveRotation('player_hole', currentPlayerMechs, false, index);
             
             setTimeout(() => {
                 traverseAndActivate();
@@ -621,8 +637,6 @@ function traverseGrid(currentCellIndex) {
 
     var newContents = grid[newX][newY];
     var newId = assetsGrid[newX][newY];
-
-    //console.log('traversing ', newX, newY);
 
     if(newContents != ' ')
         assetsToClear.push(newId);
@@ -685,15 +699,15 @@ function selectLocation(index) {
     moveImage($('#player_rotation'), getPlayerRotationCoords(loc));
 
     //reset rotation to face North
-    resolveRotation('player_hole', currentPlayerMechs, false, [0,1]);
+    currentIndex = [0,1];
+    resolveRotation('player_hole', currentPlayerMechs, false, currentIndex);
 
     if(currentStep == 1) { // no need to select direction
         //make all test locations invisible
-        toggleTestSpots(false, false, loc);
-        finishStep(index);
+        currentIndex = index;
     } else {
         //make all test locations invisible
-        toggleTestSpots(false, true, loc);
+        toggleTestSpots(true, true, loc);
     }
 }
 
@@ -841,12 +855,6 @@ function getRandomFromArray(arr, val) {
     }
 }
 
-function fitToGrid(val) {
-    if(val < 0) return 0;
-    if(val >= ARENA_LENGTH) return ARENA_LENGTH - 1;
-    return val;
-}
-
 function isWithinGrid(val) {
     if(val < 0 || val >= ARENA_LENGTH) return false;
     return true;
@@ -902,9 +910,6 @@ function getPlayerRotationCoords(loc = null) {
 function getFinalRotation(targetObject) {
     var rotDir = targetObject.rotationDirection;
     var rotNum = targetObject.rotationNumber;
-
-    var CWdeg = 90;
-    var CCWdeg = -90;
 
     var rotationDegree = (rotDir == 'CW'? 90 : -90);
     var rotationMultiplier = (rotNum == 3? -1 : 1);
@@ -983,7 +988,6 @@ function addScore(isCorrect) {
 /* from https://jsfiddle.net/dch7xyez/2/ */
 function drawLine(point1, point2) {
     //reverse x and y here
-    //console.log('drawing line', point1, point2);
 
     var lineSvg = document.createElementNS('http://www.w3.org/2000/svg','line');
     lineSvg.setAttribute('x1', point1[1]);
@@ -1043,7 +1047,6 @@ function getRotatedCoords(coords, degAngle) {
     // reverse x and y here
 
     var center = getCenterCoords('player_hole');
-    //console.log('center', center);
     var radAngle = toRadians(degAngle);
     var x = coords[1];
     var xm = center[1];
@@ -1056,7 +1059,6 @@ function getRotatedCoords(coords, degAngle) {
     var newX = (x-xm)*cosRad - (y-ym)*sinRad + xm;
     var newY = (x-xm)*sinRad + (y-ym)*cosRad + ym;
 
-    //console.log(newY, newX);
     return [newY, newX];
 }
 
