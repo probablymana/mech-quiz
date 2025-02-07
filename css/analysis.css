@@ -1,23 +1,34 @@
 body {
     font-family: 'Liter', 'Roboto', sans-serif;
-    background-color: darkslategray;
+    background-color:darkslategray;
+}
+
+h1 {
+    font-size: 28px;
+}
+.quizContainer {
+    position: relative;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 25px;
+    background-color:beige;
+    width: 880px;
 }
 
 #arenaContainer {
-    float: left;
     position: relative;
     top: 0;
     left: 0;
-    margin: 0 60px;
+    margin: 10px;
+    border-radius: 50px;
+    height: 860px;
 }
 
-#info {
-    float: right;
-    padding: 0 50px;
-    width: 40%;
-    height: 965px;
-    border-radius: 15px;
-    background-color: white;
+.info {
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-around;
 }
 
 #arenaContainer img {
@@ -36,33 +47,48 @@ body {
 }
 
 .testLoc {
-    clip-path: circle(30% at 50% 50%);
+    clip-path: circle(25% at 50% 50%);
 }
 
 .testDir {
-    clip-path: polygon(50% 50%, 80% 90%, 50% 80%, 20% 90%)
+    clip-path: polygon(50% 45%, 80% 90%, 50% 80%, 20% 90%);
+}
+
+#buttons {
+    padding: 20px;
+    text-align: center;
 }
 
 button {
     padding: 15px;
     font-size: 20px;
-    margin: 0px 10px;
+    margin: 2px 2px;
     border-radius: 15px;
+    width: 130px;
 }
 
-#bossInfo, #playerInfo, #scoreInfo {
-    height: 100px;
+#bossInfo {
+    width: 50px;
+}
+
+#playerInfo {
+    width: 100px;
+}
+
+#scoreInfo {
+    width: 200px;
 }
 
 #explanation {
     border-style: solid;
     border-radius: 15px;
     border-width: 2px;
-    padding: 40px 30px;
+    margin: 10px 20px;
+    padding: 30px 30px;
     display: inline-block;
-    width: 80%;
+    width: 100%;
     text-align: center;
-    font-size: 25px;
+    font-size: 24px;
 }
 
 .correct {
@@ -80,9 +106,6 @@ button {
     background-color: lightgray;
 }
 
-#buttons {
-    padding: 30px;
-}
 
 #resetButton {
     background-color: lightcoral;

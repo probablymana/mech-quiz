@@ -3,7 +3,31 @@ import {
     colinearPointWithinSegment
 } from 'https://unpkg.com/line-intersect@3.0.0/es/index.js';
 
-const CELL_SIZE = 193;
+const ORB_AOE_ASSET = '../assets/aloalo/orb-aoe.png';
+const ORB_ASSET = '../assets/aloalo/ozma.png';
+const CW_ASSET = '../assets/aloalo/rotation-cw.png';
+const CCW_ASSET = '../assets/aloalo/rotation-ccw.png';
+const EX_ASSET = '../assets/aloalo/ex.png';
+const CHECK_ASSET = '../assets/aloalo/check.png';
+const THREE_ASSET = '../assets/aloalo/times-three.png';
+const FIVE_ASSET = '../assets/aloalo/times-five.png';
+const FRONT_ASSET = '../assets/aloalo/front-unseen.png';
+const RIGHT_ASSET = '../assets/aloalo/right-unseen.png';
+const LEFT_ASSET = '../assets/aloalo/left-unseen.png';
+const BACK_ASSET = '../assets/aloalo/back-unseen.png';
+const ARENA_ASSET = '../assets/aloalo/aloalo-boss-2-lala.png';
+const DEADZONE_ASSET = '../assets/aloalo/dead-zone.png';
+const START_ASSET = '../assets/aloalo/arrow-start.png';
+const ARROW_ASSET = '../assets/aloalo/arrow-normal.png';
+const BOSS_AOE_ASSET = '../assets/aloalo/boss-aoe.png';
+const BOSS_AOE_ASSET2 = '../assets/aloalo/boss-aoe2.png';
+const PLAYER_FACE_ASSET = '../assets/aloalo/player.png';
+const PLAYER_HOLE_ASSET = '../assets/aloalo/player-hole.png';
+const LOC_ASSET = '../assets/aloalo/test-location.png';
+const DIR_ASSET = '../assets/aloalo/test-direction.png';
+
+const ARENA_SIZE = 860; // originally 965
+const CELL_SIZE = ARENA_SIZE/5;
 const HOLE_LOCATIONS = ['U', 'R', 'D', 'L'];
 const ROTATION_NUMBERS = [3, 5];
 const ROTATION_DIRECTIONS = ['CW', 'CCW'];
@@ -73,14 +97,14 @@ const ROTATION_DIR_TO_DEGREES = new Map([
     ['L', 270]
   ]);
 const ROTATION_NUM_TO_IMG = new Map([
-    [3, '../assets/times-three.png'],
-    [5, '../assets/times-five.png']
+    [3, THREE_ASSET],
+    [5, FIVE_ASSET]
   ]);
 const DEBUFF_HOLE_LOC_TO_IMG = new Map([
-    ['U', '../assets/front-unseen.png'],
-    ['R', '../assets/right-unseen.png'],
-    ['D', '../assets/back-unseen.png'],
-    ['L', '../assets/left-unseen.png']
+    ['U', FRONT_ASSET],
+    ['R', RIGHT_ASSET],
+    ['D', BACK_ASSET],
+    ['L', LEFT_ASSET]
   ]);
 const DIRECTION_ROTATIONS = [
     [-45,  0,   45],
@@ -90,14 +114,16 @@ const DIRECTION_ROTATIONS = [
 const PLAYER_SIZE = 50;
 const PLAYER_OFFSET = CELL_SIZE/2 - PLAYER_SIZE/2;
 
-const ROT_DIR_SIZE = 80;
+const ROT_DIR_SIZE = 70;
 const ROT_DIR_OFFSET = CELL_SIZE/2 - ROT_DIR_SIZE/2;
 
-const ASSET_SIZE = 100;
+const ASSET_SIZE = 90;
 
 const FADE_DEFAULT = 300;
 const START_SECONDS = 300;
 const INTERVAL_SECONDS = 1000;
+
+const SCORE_SIZE = 50;
 
 var arenaGrid = {};
 var deadzoneGrid = [];
@@ -153,8 +179,9 @@ function startOver() {
 
 function initGrid(orient = null) {
     var arenaImg = $('<img>', {
-        src: '../assets/aloalo-boss-2-lala.png',
-        id: 'arenaImg'
+        src: ARENA_ASSET,
+        id: 'arenaImg',
+        height: ARENA_SIZE
     });
     $('#arenaContainer').append(arenaImg);
 
@@ -325,8 +352,9 @@ function step0() {
         for(var j = 0; j < ARENA_LENGTH; j++) {
             var cellId = `dead_${i}_${j}`;
             var cellImg = $('<img>', { 
-                src: "../assets/dead-zone.png",
-                id: cellId
+                src: DEADZONE_ASSET,
+                id: cellId,
+                height: CELL_SIZE
             });
             cellImg.css({
                 'top': i*CELL_SIZE + 'px',
@@ -346,9 +374,9 @@ function step0() {
 
     // set up arrows
     var startArrows = arenaGrid.starts;
-    initAssets('start_arrow', '../assets/arrow-start.png', startArrows);
-    initAssets('arrow', '../assets/arrow-normal.png', arenaGrid.arrows);
-    initAssets('orb', '../assets/ozma.png', arenaGrid.orbs);
+    initAssets('start_arrow', START_ASSET, startArrows);
+    initAssets('arrow', ARROW_ASSET, arenaGrid.arrows);
+    initAssets('orb', ORB_ASSET, arenaGrid.orbs);
 
     // activate deadzones for start arrows, add to currentCells
     for(var i = 0; i < startArrows.length; i++) {
@@ -371,8 +399,9 @@ function step0() {
     // generate boss aoe (invisible)
     var bossAoe = currentBossMechs.holeLocation;
     var bossAoeImg = $('<img>', { 
-        src: '../assets/boss-aoe.png',
-        id: 'boss_aoe'
+        src: BOSS_AOE_ASSET,
+        id: 'boss_aoe',
+        height: ARENA_SIZE
     });
     bossAoeImg.css({
         'top': '0px',
@@ -393,7 +422,7 @@ function step0() {
     var playerHole = currentPlayerMechs.holeLocation;
 
     var playerFaceImg = $('<img>', { 
-        src: '../assets/player.png',
+        src: PLAYER_FACE_ASSET,
         id: 'player_face',
         height: PLAYER_SIZE + 'px'
     });
@@ -403,7 +432,7 @@ function step0() {
     });
 
     var playerHoleImg = $('<img>', { 
-        src: '../assets/player-hole.png',
+        src: PLAYER_HOLE_ASSET,
         id: 'player_hole',
         height: PLAYER_SIZE + 'px'
     });
@@ -429,8 +458,8 @@ function step0() {
     displayStatusInfo('bossInfo', 'boss_rot_num', ROTATION_NUM_TO_IMG.get(currentBossMechs.rotationNumber));
     
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '965');
-    svg.setAttribute('height', '965');
+    svg.setAttribute('width', ARENA_SIZE);
+    svg.setAttribute('height', ARENA_SIZE);
     svg.setAttribute('id', 'arenaSvg');
     svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
     $('#arenaContainer').append(svg);
@@ -459,7 +488,7 @@ function initTests() {
             var leftPx = baseCell + j*PLAYER_OFFSET;
 
             var testImg = $('<img>', { 
-                src: '../assets/test-location.png',
+                src: LOC_ASSET,
                 id: testId,
                 onclick: `selectLocation([${i}, ${j}])`,
                 height: PLAYER_SIZE + 'px',
@@ -491,7 +520,7 @@ function initTests() {
             var directionCoords = getTestDirectionCoords([i,j], playerLoc);
             var testId = `test_dir_${i}_${j}`;
             var testImg = $('<img>', {
-                src: '../assets/test-direction.png',
+                src: DIR_ASSET,
                 id: testId,
                 onclick: `selectDirection([${i}, ${j}])`,
                 height: PLAYER_SIZE + 'px',
@@ -550,7 +579,7 @@ function finishStep() {
                 traverseAndActivate();
 
                 var bossAoeImg = $('#boss_aoe');
-                bossAoeImg.attr('src', '../assets/boss-aoe2.png');  
+                bossAoeImg.attr('src', BOSS_AOE_ASSET2);  
                 resolveRotation('boss_aoe', currentBossMechs, true, null);
                 bossAoeImg.fadeTo(FADE_DEFAULT, 0.7);
                 bossAoeImg.fadeOut(FADE_DEFAULT + 400);
@@ -808,7 +837,8 @@ function initAssets(idPrefix, imgPath, coordsList) {
         var cellId = `${idPrefix}_${i}`;
         var cellImg = $('<img>', { 
             src: imgPath,
-            id: cellId
+            id: cellId,
+            height: ASSET_SIZE
         });
         cellImg.css({
             'top': (cellX*CELL_SIZE + offset) + 'px',
@@ -863,8 +893,8 @@ function isWithinGrid(val) {
 
 function explodeOrb() {
     var orbExplosionImg = $('<img>', {
-        src: '../assets/orb-aoe.png',
-        height: 965 + 'px'
+        src: ORB_AOE_ASSET,
+        height: ARENA_SIZE + 'px'
     });
     orbExplosionImg.css({
         'top': '0px',
@@ -879,7 +909,7 @@ function explodeOrb() {
 
 function placeRotations(imgId, rotation, size) {
     var rotationPath = (rotation == 'CW'?
-        '../assets/rotation-cw.png' : '../assets/rotation-ccw.png');
+        CW_ASSET : CCW_ASSET);
     var rotationImg = $('<img>', { 
         src: rotationPath,
         id: imgId,
@@ -920,7 +950,7 @@ function getFinalRotation(targetObject) {
 
 function getCenterCoords(targetId) {
     if(targetId.startsWith('boss'))
-        return [482.5, 482.5];
+        return [ARENA_SIZE/2, ARENA_SIZE/2];
     
     var targetTopLeft = getTopLeftCoord(targetId);
     var targetTop = targetTopLeft[0];
@@ -974,15 +1004,18 @@ function isIntersecting(segmentAB, segmentCD) {
 }
 
 function addScore(isCorrect) {
-    var imgPath = '../assets/ex.png';
+    var imgPath = EX_ASSET;
     if(isCorrect) {
-        imgPath = '../assets/check.png';
+        imgPath = CHECK_ASSET;
         currentScore++;
     }
 
     var newScoreImg = $('<img>', {
-        src: imgPath
+        src: imgPath,
+        height: SCORE_SIZE,
+        width: SCORE_SIZE
     });
+
     $('#scoreInfo').append(newScoreImg);
 }
 
