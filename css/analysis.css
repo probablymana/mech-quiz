@@ -55,16 +55,23 @@ h1 {
 }
 
 #buttons {
-    padding: 20px;
+    padding: 15px 10px;
     text-align: center;
 }
 
-button {
-    padding: 15px;
+.directionButton {
+    height: 50px;
+    width: 50px;
+    font-size: 20px;
+    margin: 2px 2px;
+}
+
+#confirmButton, #nextButton, #resetButton {
+    padding: 10px;
     font-size: 20px;
     margin: 2px 2px;
     border-radius: 15px;
-    width: 130px;
+    width: 120px;
 }
 
 #bossInfo {
@@ -76,7 +83,7 @@ button {
 }
 
 #scoreInfo {
-    width: 200px;
+    width: 100px;
 }
 
 #explanation {

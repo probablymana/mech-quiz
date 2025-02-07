@@ -22,7 +22,7 @@
                     <h1>Score</h1>
                     <div id="scoreInfo"></div>
                 </div>
-
+                
                 <div>
                     <h1>Lala</h1>
                     <div id="bossInfo"></div>
@@ -34,10 +34,22 @@
                 </div>
 
                 <div id="buttons">
-                    <button id="confirmButton" type="button" onclick="finishStep()">Confirm</button>
+                    <button class="directionButton" type="button" onclick="selectDirection([0, 0])" disabled>🢄</button>
+                    <button class="directionButton" type="button" onclick="selectDirection([0, 1])" disabled>🢁</button>
+                    <button class="directionButton" type="button" onclick="selectDirection([0, 2])" disabled>🢅</button><br>
+                    <button class="directionButton" type="button" onclick="selectDirection([1, 0])" disabled>🢀</button>
+                    <button class="directionButton" id="middleDirection" type="button" disabled>⬤</button>
+                    <button class="directionButton" type="button" onclick="selectDirection([1, 2])" disabled>🢂</button><br>
+                    <button class="directionButton" type="button" onclick="selectDirection([2, 0])" disabled>🢇</button>
+                    <button class="directionButton" type="button" onclick="selectDirection([2, 1])" disabled>🢃</button>
+                    <button class="directionButton" type="button" onclick="selectDirection([2, 2])" disabled>🢆</button>
+                </div>
+
+                <div id="buttons">
+                    <button id="confirmButton" type="button" onclick="finishStep()">Confirm</button><br>
                     <button id="nextButton" type="button" onclick="nextStep()">Continue</button>
                     <br>
-                    <button id="resetButton" type="button" onclick="startOver()">Start Over</button>
+                    <button id="resetButton" type="button" onclick="startOver()">Reset</button>
                 </div>
             </div>
                 

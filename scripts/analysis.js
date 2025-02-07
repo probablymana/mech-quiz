@@ -149,10 +149,10 @@ $(document).ready(function() {
     window.finishStep = finishStep;
     window.startOver = startOver;
 
-    startOver();
+    initGame();
 });
 
-function startOver() {
+function initGame() {
     arenaGrid = {};
     deadzoneGrid = [];
     assetsGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));visitedGrid = [...Array(ARENA_LENGTH)].map(e => Array(ARENA_LENGTH));
@@ -174,7 +174,20 @@ function startOver() {
     $('#playerInfo').empty();
     $('#scoreInfo').empty();
 
+    $('.directionButton').attr('disabled', true);
+
     initGrid();
+    nextStep();
+}
+
+function startOver() {
+    //console.log(isMobile());
+    if(currentStep>=4) {
+        initGame();
+        return;
+    }
+    var result = confirm("Are you sure you want to start over?");
+    if (result === true) initGame();
 }
 
 function initGrid(orient = null) {
@@ -193,8 +206,6 @@ function initGrid(orient = null) {
     }
 
     weirdPattern = (arenaGrid.note == 'odd');
-    
-    nextStep();
 }
 
 function nextStep() {
@@ -706,8 +717,12 @@ function toggleTestSpots(showLocations, showDirections, loc) {
                 var directionCoords = getTestDirectionCoords([i,j], loc);
                 moveImage(directionImg, directionCoords);
                 directionImg.fadeIn(FADE_DEFAULT);
+
+                $('.directionButton').attr('disabled', false);
+                $('#middleDirection').attr('disabled', true);
             } else {
                 directionImg.fadeOut(FADE_DEFAULT);
+                $('.directionButton').attr('disabled', true);
             }
         }
     }
