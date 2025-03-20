@@ -1,7 +1,6 @@
 import {
-    checkIntersection,
-    colinearPointWithinSegment
-} from 'https://unpkg.com/line-intersect@3.0.0/es/index.js';
+    checkIntersection
+} from 'line-intersect';
 
 const ORB_AOE_ASSET = '../assets/aloalo/orb-aoe.png';
 const ORB_ASSET = '../assets/aloalo/ozma.png';
